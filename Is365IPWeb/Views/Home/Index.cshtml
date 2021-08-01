@@ -1,0 +1,23 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<form asp-action="CheckIPInList">
+    <div class="form-group">
+        <label asp-for="IP" class="control-label">Check this IP</label>
+        <input asp-for="IP" class="form-control" />
+        <span asp-validation-for="IP" class="text-danger"></span>
+        <label class="control-label">Is O365 IP: @Model.IsO365IP</label>       
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Go" class="btn btn-primary" />
+    </div>
+</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
