@@ -42,7 +42,7 @@ namespace Is365IPWeb
 
         public async Task<List<EndPointList>> GetEndpointList()
         {
-            List<EndPointList> endpoints = new List<EndPointList>();
+            List<EndPointList> endpoints;
 
             //1. Check version
             var currentVersionFilePath = Path.Combine(_env.WebRootPath, @"Files\CurrentVersion.json");

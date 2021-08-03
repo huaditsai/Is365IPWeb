@@ -10,14 +10,61 @@
 <form asp-action="CheckIPInList">
     <div class="form-group">
         <label asp-for="IP" class="control-label">Check this IP</label>
-        <input asp-for="IP" class="form-control" />
         <span asp-validation-for="IP" class="text-danger"></span>
-        <label class="control-label">Is O365 IP: @Model.IsO365IP</label>       
+        <input asp-for="IP" class="form-control" />
+        @if (Model.IP != null)
+        {
+            <label class="control-label">Is O365 IP: </label><label class="text-danger">@Model.IsO365IP</label>
+        }
     </div>
     <div class="form-group">
         <input type="submit" value="Go" class="btn btn-primary" />
     </div>
 </form>
+
+<div class="form-group">
+    <label for="txtIPs" class="control-label">Check these IP (Multi Line)</label>
+    <textarea id="txtIPs" class="form-control" rows="10"></textarea>
+</div>
+<div class="form-group">
+    <input id="btnGo" type="submit" value="Go" class="btn btn-primary" />
+</div>
+<div id="divCheckResult" class="form-group">
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        $(function () {
+            $('#btnGo').click(function () {
+                $("#divCheckResult").empty();
+                var lines = $('#txtIPs').val().trim().split('\n');
+                for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].replace(/^\s+|\s+$/, '').length != 0) {
+                        var model = { IP: lines[i] }
+                        $.ajax({
+                            url: '@Url.Action("CheckIPAjax", "Home")',
+                            type: 'POST',
+                            data: JSON.stringify(model),
+                            contentType: "application/json; charset=utf-8",
+                            success: function (result, status, xhr) {
+                                console.log(result);
+                                if (result.IsO365IP) {
+                                    $("#divCheckResult").append('<label class="control-label">' + result.IP + ':&nbsp;' + '</label>' + '<label class="control-label">' + result.IsO365IP + '</label><br />');
+                                } else {
+                                    $("#divCheckResult").append('<label class="control-label">' + result.IP + ':&nbsp;' + '</label>' + '<label class="text-danger">' + result.IsO365IP + '</label><br />');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
+                            }
+                        });
+                    }
+                }
+
+                return false;
+            });
+        });
+    </script>
 }
