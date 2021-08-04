@@ -57,6 +57,8 @@ namespace Is365IPWeb.Controllers
                             if (IpHelper.IsInSubnet(inputIP, ipRange))
                             {
                                 model.IsO365IP = true;
+                                model.ServiceName = endPoint.serviceAreaDisplayName;
+                                return RedirectToAction("Index", "Home", model);
                             }
                         }
                     }
@@ -64,15 +66,17 @@ namespace Is365IPWeb.Controllers
                 catch (Exception e)
                 {
                     _logger.LogError("Error when checking IP", e);
+                    return StatusCode(500, e.Message);
                 }
-                return RedirectToAction("Index", "Home", model);
+                
             }
             else if (!conversionSuccessful)
             {
                 _logger.LogError("Invailed IP input");
+                return StatusCode(400, "Invailed IP input");
             }
 
-            return View(model);
+            return RedirectToAction("Error", "Home");
         }
 
         [HttpPost]
@@ -90,6 +94,8 @@ namespace Is365IPWeb.Controllers
                             if (IpHelper.IsInSubnet(inputIP, ipRange))
                             {
                                 model.IsO365IP = true;
+                                model.ServiceName = endPoint.serviceAreaDisplayName;
+                                return Content(JsonConvert.SerializeObject(model), "application/json");
                             }
                         }
                     }
@@ -97,12 +103,13 @@ namespace Is365IPWeb.Controllers
                 catch(Exception e)
                 {
                     _logger.LogError("Error when checking IP", e);
-                }
-                return Content(JsonConvert.SerializeObject(model), "application/json");
+                    return StatusCode(500, e.Message);
+                }                
             }
             else if (!conversionSuccessful)
             {
                 _logger.LogError("Invailed IP input");
+                return StatusCode(400, "Invailed IP input");
                 //return Json(new Dictionary<string, string> { { model.IP, "Invailed IP" } });
             }
 

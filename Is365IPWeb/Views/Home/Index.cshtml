@@ -14,7 +14,11 @@
         <input asp-for="IP" class="form-control" />
         @if (Model.IP != null)
         {
-            <label class="control-label">Is O365 IP: </label><label class="text-danger">@Model.IsO365IP</label>
+            <label class="control-label">@Model.IP is O365 IP?</label><label class="text-danger">&nbsp;@Model.IsO365IP</label>
+            if (!string.IsNullOrEmpty(@Model.ServiceName))
+            {
+                <label class="control-label">,&nbsp;Service: @Model.ServiceName</label>
+            }
         }
     </div>
     <div class="form-group">
@@ -34,10 +38,9 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/lib/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js"></script>
     <script>
         $(function () {
-            $('#btnGo').click(function () {
+            $('#btnGo').click(()=> {
                 $("#divCheckResult").empty();
                 var lines = $('#txtIPs').val().trim().split('\n');
                 for (var i = 0; i < lines.length; i++) {
@@ -51,9 +54,9 @@
                             success: function (result, status, xhr) {
                                 console.log(result);
                                 if (result.IsO365IP) {
-                                    $("#divCheckResult").append('<label class="control-label">' + result.IP + ':&nbsp;' + '</label>' + '<label class="control-label">' + result.IsO365IP + '</label><br />');
+                                    $("#divCheckResult").append('<label class="control-label">' + result.IP + ':&nbsp;</label><label class="control-label">' + result.IsO365IP + '</label><label class="control-label">,&nbsp;Service: ' + result.ServiceName + '</label><br />');
                                 } else {
-                                    $("#divCheckResult").append('<label class="control-label">' + result.IP + ':&nbsp;' + '</label>' + '<label class="text-danger">' + result.IsO365IP + '</label><br />');
+                                    $("#divCheckResult").append('<label class="control-label">' + result.IP + ':&nbsp;</label><label class="text-danger">' + result.IsO365IP + '</label><br />');
                                 }
                             },
                             error: function (xhr, status, error) {

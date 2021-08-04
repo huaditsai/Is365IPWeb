@@ -21,6 +21,7 @@ namespace Is365IPWeb
     {
         public string Id { get; set; } //The immutable id number of the endpoint set.
         public string ServiceArea { get; set; } //The service area that this is part of: Common, Exchange, SharePoint, or Skype.
+        public string serviceAreaDisplayName { get; set; }
         public string[] URLs { get; set; } //URLs for the endpoint set. A JSON array of DNS records. Omitted if blank.
         public string TcpPorts { get; set; } //TCP ports for the endpoint set. All ports elements are formatted as a comma-separated list of ports or port ranges separated by a dash character (-). Ports apply to all IP addresses and all URLs in the endpoint set for a given category. Omitted if blank.
         public string UdpPorts { get; set; } //UDP ports for the IP address ranges in this endpoint set. Omitted if blank.
