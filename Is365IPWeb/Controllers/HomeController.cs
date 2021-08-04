@@ -76,7 +76,8 @@ namespace Is365IPWeb.Controllers
                 return StatusCode(400, "Invailed IP input");
             }
 
-            return RedirectToAction("Error", "Home");
+            return RedirectToAction("Index", "Home", model);
+            
         }
 
         [HttpPost]
