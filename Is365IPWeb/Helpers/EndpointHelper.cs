@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Is365IPWeb.Helpers;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -34,10 +35,11 @@ namespace Is365IPWeb
 
     public class EndpointHelper
     {
-        private readonly ILogger<EndpointHelper> _logger;
+        private readonly ILogger _logger;
         private readonly IWebHostEnvironment _env;
         public EndpointHelper(IWebHostEnvironment webHostEnvironment)
         {
+            _logger = LogHelper.AppLogging.CreateLogger("EndpointHelper");
             _env = webHostEnvironment;
         }
 
@@ -50,6 +52,9 @@ namespace Is365IPWeb
             var currentVersion = JsonConvert.DeserializeObject<IPVersion>(System.IO.File.ReadAllText(currentVersionFilePath));
             var lastVersion = await GetLastVersion();
 
+            _logger.LogInformation("Current version: " + currentVersion);
+            _logger.LogInformation("Last version from MS: " + lastVersion);
+
             if (currentVersion.Latest != lastVersion.Latest)
             {
                 //2. Download new endpoint list
@@ -57,7 +62,10 @@ namespace Is365IPWeb
 
                 //3. Update current version file
                 if (endpoints != null && endpoints.Count > 0)
+                {
                     File.WriteAllText(currentVersionFilePath, JsonConvert.SerializeObject(lastVersion), System.Text.Encoding.UTF8);
+                    _logger.LogInformation("Endpoint List Updated");
+                }
             }
             else //Read endpoints file
             {
