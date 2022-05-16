@@ -1,5 +1,6 @@
 ﻿using Is365IPWeb.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,13 +18,17 @@ namespace Is365IPWeb.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IWebHostEnvironment _env;
 
+        private IHttpContextAccessor _accessor;
+
         private readonly EndpointHelper _endpointHelper;
         private readonly List<EndPointList> _endpointList;
 
-        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment webHostEnvironment)
+        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor accessor)
         {
             _logger = logger;
             _env = webHostEnvironment;
+
+            _accessor = accessor;
 
             _endpointHelper = new EndpointHelper(_env);
             _endpointList = _endpointHelper.GetEndpointList().Result;
@@ -36,6 +41,10 @@ namespace Is365IPWeb.Controllers
 
         public IActionResult Index(IndexViewModel model)
         {
+            //var ClientIPAddr = HttpContext.Connection.RemoteIpAddress?.ToString();
+            string ipAddress = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            ViewBag.IPAddress = ipAddress;
+
             return View(model);
         }
 

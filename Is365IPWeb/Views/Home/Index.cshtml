@@ -5,7 +5,15 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @{
+		var remoteIp = Context.Request.HttpContext.Connection.RemoteIpAddress;
+        if (remoteIp.IsIPv4MappedToIPv6)
+        {
+            remoteIp = remoteIp.MapToIPv4();
+        }
+		<p>Your IP is @remoteIp </p>
+	}
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>    
 </div>
 <form asp-action="CheckIPInList">
     <div class="form-group">
