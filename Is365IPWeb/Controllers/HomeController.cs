@@ -126,7 +126,7 @@ namespace Is365IPWeb.Controllers
             return Content(JsonConvert.SerializeObject(model), "application/json");
         }
 
-        public IActionResult URLDeEnCode()
+        public IActionResult EnDeCode()
         {
             return View();
         }
